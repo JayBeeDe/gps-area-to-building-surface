@@ -1,0 +1,57 @@
+<!-- This is a typical example of xml file that you can find in openstreetsmap
+All datas are faked, just for developer to understand fastly the software -->
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.3.3 (32154 thorn-02.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <!-- Window Coordonates -->
+ <bounds minlat="48.2252000" minlon="16.4056000" maxlat="48.2343000" maxlon="16.4196000"/>
+ <!-- ... -->
+ <!-- A node is a point with gps coordonate -->
+ <node id="292131136" visible="true" version="4" changeset="10956117" timestamp="2012-03-12T15:28:11Z" user="wolfbert" uid="99800" lat="48.2333800" lon="16.4168851"/>
+ <node id="292131151" visible="true" version="4" changeset="10956117" timestamp="2012-03-12T15:28:12Z" user="wolfbert" uid="99800" lat="48.2333817" lon="16.4170950"/>
+ <node id="345581179" visible="true" version="4" changeset="13391941" timestamp="2012-10-06T23:05:06Z" user="Rudolf_H" uid="56501" lat="48.2295999" lon="16.4185748"/>
+ <node id="345581182" visible="true" version="4" changeset="13391941" timestamp="2012-10-06T23:05:06Z" user="Rudolf_H" uid="56501" lat="48.2294241" lon="16.4183937"/>
+ <node id="345581192" visible="true" version="4" changeset="13391941" timestamp="2012-10-06T23:05:06Z" user="Rudolf_H" uid="56501" lat="48.2295295" lon="16.4186720"/>
+ <node id="345581195" visible="true" version="4" changeset="13391941" timestamp="2012-10-06T23:05:07Z" user="Rudolf_H" uid="56501" lat="48.2294617" lon="16.4183408"/>
+ <node id="1672598103" visible="true" version="1" changeset="10960503" timestamp="2012-03-12T21:12:42Z" user="wolfbert" uid="99800" lat="48.2335264" lon="16.4169148"/>
+ <!-- A node can also contain tag -->
+ <node id="1672116266" visible="true" version="4" changeset="14233304" timestamp="2012-12-11T09:09:14Z" user="woodpeck_repair" uid="145231" lat="48.2333749" lon="16.4170159">
+  <tag k="building" v="entrance"/>
+  <tag k="name" v="Gate 1"/>
+  <tag k="source" v="survey"/>
+ </node>
+ <!-- ... -->
+ <!-- These ways are buildings because of tag k which has a value of building 
+ All node are GPS points from the building -->
+ <way id="255567990" visible="true" version="1" changeset="19847784" timestamp="2014-01-06T17:15:03Z" user="r0t" uid="273049">
+  <nd ref="345581182"/>
+  <nd ref="345581195"/>
+  <nd ref="345581179"/>
+  <nd ref="345581192"/>
+  <!-- ... -->
+  <nd ref="345581182"/>
+  <tag k="building" v="yes"/>
+ </way>
+ <way id="154779654" visible="true" version="4" changeset="17694488" timestamp="2013-09-05T21:06:16Z" user="Edmund_Humenberger" uid="283266">
+  <nd ref="1672598103"/>
+  <nd ref="292131136"/>
+  <nd ref="1672116266"/>
+  <nd ref="292131151"/>
+  <!-- ... -->
+  <nd ref="1672598103"/>
+  <tag k="building" v="yes"/>
+  <!-- Other informations can be found -->
+  <tag k="building:levels" v="1"/>
+  <tag k="source" v="wien.gv.at"/>
+ </way>
+ <!-- ... -->
+ <!-- A relation is a group of way. 
+ When way is a building, the attribute role precise 
+ if it's the building itself (inner) or if it's the inner courtyard (outer) -->
+ <relation id="3422360" visible="true" version="1" changeset="19847784" timestamp="2014-01-06T17:15:03Z" user="r0t" uid="273049">
+  <member type="way" ref="255567990" role="outer"/>
+  <member type="way" ref="154779654" role="inner"/>
+  <!-- ... -->
+  <tag k="building" v="yes"/>
+ </relation>
+ <!-- ... -->
+</osm>

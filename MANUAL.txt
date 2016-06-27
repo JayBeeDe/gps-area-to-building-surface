@@ -1,0 +1,245 @@
+======================================================
+=        SurfaceProcess Version 1.0 17/11/14         =
+=                     USER MANUAL                    =
+======================================================
+
+
+
+PLEASE TAKES NOTE OF README BEFORE THE USER'S MANUAL.
+
+==================== USER OPTIONS ====================
+These are the options the user has to enter in the 
+console.
+Default values are marked with double hook. When user 
+enters nothing, it doesn't fail but gets this value.
+ ____________________________________________________
+│# Option 1:                                         │
+│____________________________________________________│
+│     │Datas are imported directly form the website  │
+│     │______________________________________________│
+│[[1]]│GPS coordonates has to be enterd by user. The │
+│     │ format is nn.nnnn or -nn.nnnn.               │
+│     │It requires an internet connexion.            │
+│_____│______________________________________________│
+│     │Datas are imported from an .osm file exported │
+│     │ before in your computer from website.        │
+│ [2] │______________________________________________│
+│     │Path has to be entered by user.               │
+│_____│______________________________________________│
+│# Option 2:                                         │
+│____________________________________________________│
+│     │Output XML data from XSLT is saved directly in│
+│[[1]]│ a variable, and therefore in the RAM         │
+│     │-> Better performances but must not exceed the│
+│     │ amount of assigned memory.                   │
+│_____│______________________________________________│
+│     │Output XML from XSLT is saved in a XML file.  │
+│ [2] │______________________________________________│
+│     │Path has to be entered by user.               │
+│_____│______________________________________________│
+
+=============== OPTIONS IN SOURCE CODE ===============
+All the settings are available in the SurfaceProcess.m
+file from the SurfaceProcess function, in the 
+"%% options" section. All variables used for settings 
+are global variables.
+ ____________ _______ _______________________________
+│  Variable  │ Type  │        Default Value          │
+│____________│_______│_______________________________│
+│API.begin   │string │'http://api.openstreetmap.org/ │
+│            │       │ api/0.6/map?bbox='            │
+│API.sep     │string │','                            │
+│API.end     │string │''                             │
+│templateXSLT│string │'transform.xsl'                │
+│defaultLang │string │'EN'                           │
+│R           │double │6371                           │
+│cropToWindow│boolean│true                           │
+│countInner  │boolean│true                           │
+│____________│_______│_______________________________│
+ ____________ _______________________________________
+│  Variable  │              Description              │
+│____________│_______________________________________│
+│API.begin   │Link used to download osm file drectly │
+│API.sep     │ from openstreetsmap servers           │
+│API.end     │                                       │
+│____________│_______________________________________│
+│templateXLST│link to the xslt file                  │
+│____________│_______________________________________│
+│defaultLang │language (*)                           │
+│____________│_______________________________________│
+│R           │Earth Radius (Km)                      │
+│____________│_______________________________________│
+│            │if this options is disabled, will count│
+│cropToWindow│ the surface of the buildings, even if │
+│            │ buildings are outside the window.     │
+│____________│_______________________________________│
+│            │if this option  is enable, will        │
+│dispSurfaces│ display also the total surface and the│
+│            │ building surface.                     │
+│____________│_______________________________________│
+
+(*) To set an other language, you have to : (I) change 
+the value in the option, (II) add a case with the name
+of the new value in the Lang function in the Lang.m
+file, (III) translate in the language all the 
+variables.
+
+
+=================== HOW IT WORKS =====================
+1- The program gets an exported .osm file from the 
+OpenStreetMap server or from your computer (see # 
+Option 1 for more details).
+2- It calls XSLT processor to convert .osm file to an 
+other XML content with filtered and reordered datas. 
+It can create a .xml file or copy directly the content
+into a variable (see  # Option 2 for more details).
+3- XQuery requests the new XML content to get the GPS
+window coordonates (min/max lat/lon) and calculates 
+the full area.
+4- It parses each building and inner courtyard,
+calculates each area from each GPS point from each 
+building or inner courtyard. Depending on wether it is
+a building or courtyard, it sums or substracts the 
+area to the gloal area. Note that if a point is 
+outside the window, the point coordonate can be 
+modfied to a window coordonate only if the 
+cropToWindow option in the source code is set to 
+'true'.
+
+You can find more informations about XML structure and
+XSLT treatment with the two simple examples files in the
+IMPORTANT folder.
+For further informations about the openstreetsmap's
+XML structure, please refer to 
+http://wiki.openstreetmap.org/wiki/Elements.
+
+
+================= FILES ARCHITECTURE =================
+├───SurfaceProcess
+│   │   CartesianPoint.m
+│   │   DomPoint.m
+│   │   Lang.m
+│   │   Starter.m
+│   │   SurfaceProcess.m
+│   │   transform.xsl
+│   │   
+│   └───IMPORTANT
+│           INPUT_XSLT.xml
+│           LICENSE.txt
+│           MANUAL.txt
+│           OUTPUT_XSLT.xml
+│           README.txt
+
+
+================= CODE ARCHITECTURE ==================
+ ____________________________________________________ 
+│                  SurfaceProcess.m                  │
+│____________________________________________________│
+│>> function SurfaceProcess                          │
+│Main function. Contains all global variables and    │
+│settings. Imports data and calls XSLT processor and │
+│calls all other functions.                          │
+│____________________________________________________│
+│>> function displayResult(ret)                      │
+│>> function ajustResult(var, mod)                   │
+│Display results                                     │
+│____________________________________________________│
+│>> function ret = getFocus()                        │
+│Gets window points with XML_find function and       │
+│returns calculated area with processArea function.  │
+│____________________________________________________│ 
+│>> function ret = loopWays()                        │
+│Gets all content with XML_find function. For each   │
+│way, gets each node and sums or substracts area of  │
+│the current way to the overall area with processArea│
+│function.                                           │
+│____________________________________________________│  
+│>> function area = processArea(iniSpher, oldSpher,  │
+│   curSpher)                                        │
+│Calculates area of the triangle by converting       │
+│spherical coordonates to cartesian with             │
+│CartesianPoint constructor.                         │
+│____________________________________________________│  
+│>> function nodeList = XML_Find(xpath_relation)     │
+│Compiles XPath query from argument. Directly uses   │
+│Java when parsing XML content from variable (depend │
+│on # Option 2 value).                               │
+│____________________________________________________│
+
+ ____________________________________________________
+│                      Starter.m                     │
+│____________________________________________________│
+│>> function Starter()                               │
+│Function which display menu at startup. Calls       │
+│getCoorfunction for each input.                     │
+│____________________________________________________│  
+│>> function result = getCoor(str, mod)              │
+│Manages each input at startup menu. Checks input    │
+│data path existences, etc..                         │
+│____________________________________________________│
+
+ ____________________________________________________
+│                  CartesianPoint.m                  │
+│____________________________________________________│
+│> CartesianPoint                              class │
+│>> proprieties x,y                                  │
+│____________________________________________________│
+│>> function obj = CartesianPoint(pointSpher)  constr│
+│The constructor is directy used to convert spherical│
+│coordonates to cartesian coordonates.               │
+│____________________________________________________│
+│>> function b = degtorad(a)                         │
+│____________________________________________________│
+
+ ____________________________________________________
+│                     DomPoint.m                     │
+│____________________________________________________│
+│> DomPoint                                    class │
+│>> proprieties dom_node, lat_node, lon_node         │
+│____________________________________________________│
+│>> function obj = DomPoint(elem, position,          │
+│   {attr_lat, attr_lon})                      constr│
+│Gets element attribute value at the specified       │
+│position with DOM. If none attribute specified, gets│
+│default values.                                     │
+│____________________________________________________│
+│>> function cur = checkOutWindow(cur)               │
+│Changes coordonate(s) if necessary to avoid having  │
+│point which could be out from the window.           │
+│Is only called if cropToWindow option is set to     │
+│'true'.                                             │
+│____________________________________________________│
+
+ ____________________________________________________
+│                       Lang.m                       │
+│____________________________________________________│
+│>> function Lang(lg)                                │
+│The constructor sets all content to the matching    │
+│variable in the language specified in its argument. │
+│This function is called twice, the first time in    │
+│english, the second time in the language specified  │
+│in the defaultLang option variable, so that, if a   │
+│label doesn't exists, english is used.              │
+│____________________________________________________│
+
+
+=================== POSSIBILITIES ====================
+As mentionned in the LICENSE, this program is open 
+source. Therefore it can be modified. For exemple, it 
+is easily possible to change attributs tag in source 
+code in order to calculate surface of other elements, 
+different from building, such as water surface, forest
+surface, etc..
+
+
+====================== CONTACT =======================
+If you have questions, troobleshoutings or improvement
+proposals which ONLY DIRECTLY CONCERN SurfaceProcess,
+you can email ONE of the two contact mentioned above :
+>Jean-Baptiste Delon : jean.baptiste.delon@outlook.com
+>Martin TARANETZ : martin.taranetz@nt.tuwien.ac.at
+
+
+
+======================================================
+Copyright © 2014 Vienna University of Technology

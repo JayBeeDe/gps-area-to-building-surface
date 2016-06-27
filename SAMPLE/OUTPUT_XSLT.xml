@@ -1,0 +1,25 @@
+<!-- This is a typical example of xml content (file or variable) that is generated after xslt processing
+All datas are faked, just for developer to understand fastly the software -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Window Coordonates -->
+<result minlat="48.2252000" maxlat="48.2343000" minlon="16.4056000" maxlon="16.4196000">
+   <!-- Each surface are building with its role -->
+   <surface id="255567990" role="outer">
+      <!-- Each point is GPS point wich belongs to the current building -->
+      <point id="345581182" lat="48.2294241" lon="16.4183937"/>
+      <point id="345581195" lat="48.2294617" lon="16.4183408"/>
+      <point id="345581179" lat="48.2295999" lon="16.4185748"/>
+      <point id="345581192" lat="48.2295295" lon="16.4186720"/>
+      <!-- ... -->
+      <point id="345581182" lat="48.2294241" lon="16.4183937"/>
+   </surface>
+   <surface id="154779654" role="inner">
+      <point id="1672598103" lat="48.2335264" lon="16.4169148"/>
+      <point id="292131136" lat="48.2333800" lon="16.4168851"/>
+      <point id="1672116266" lat="48.2333749" lon="16.4170159"/>
+      <point id="292131151" lat="48.2333817" lon="16.4170950"/>
+      <!-- ... -->
+      <point id="1672598103" lat="48.2335264" lon="16.4169148"/>
+   </surface>
+   <!-- ... -->
+</result>
